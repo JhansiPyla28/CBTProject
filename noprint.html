@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simulated PDF Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
+</head>
+<body>
+    <h2>Simulated PDF Viewer</h2>
+    <div id="pdf-content"></div>
+    <button id="prev-page">Previous Page</button>
+    <button id="next-page">Next Page</button>
+
+    <script>
+        const pdfUrls = [
+            'sample.pdf'
+            // Add more PDF URLs if needed
+        ];
+
+        const pdfContent = document.getElementById('pdf-content');
+        const prevPageButton = document.getElementById('prev-page');
+        const nextPageButton = document.getElementById('next-page');
+
+        let currentPage = 0;
+
+        async function extractTextFromPdf(pdfUrl) {
+            const worker = Tesseract.createWorker();
+            await worker.load();
+            await worker.loadLanguage('eng');
+            await worker.initialize('eng');
+            
+            const { data: { text } } = await worker.recognize(pdfUrl);
+            await worker.terminate();
+            
+            return text;
+        }
+
+        async function displayPdfPage(pageNumber) {
+            const pdfText = await extractTextFromPdf(pdfUrls[pageNumber]);
+            pdfContent.innerHTML = convertTextToHtml(pdfText);
+        }
+
+        prevPageButton.addEventListener('click', () => {
+            if (currentPage > 0) {
+                currentPage--;
+                displayPdfPage(currentPage);
+            }
+        });
+
+        nextPageButton.addEventListener('click', () => {
+            if (currentPage < pdfUrls.length - 1) {
+                currentPage++;
+                displayPdfPage(currentPage);
+            }
+        });
+
+        // Function to escape HTML entities
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, (m) => map[m]);
+        }
+
+        // Convert the extracted text to HTML-like format
+        function convertTextToHtml(text) {
+            const lines = text.split('\n');
+            let html = '';
+            lines.forEach(line => {
+                html += `<p>${escapeHtml(line)}</p>`;
+            });
+            return html;
+        }
+
+        // Display the initial page
+        displayPdfPage(currentPage);
+    </script>
+</body>
+</html>
