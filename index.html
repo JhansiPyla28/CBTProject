@@ -116,7 +116,7 @@
         
     </div>
     
-    <div style="margin-left: 5%;" class="row container">
+    <div style="margin:auto" class="row container">
         <section class="quick-links container">
             <h2>Quick Links</h2>
             <div class="slider-container">
@@ -222,7 +222,7 @@
     
         </script>
     </div>
-    <div class="row" id="footer">
+    <div class="row m-auto" id="footer">
         <div class="col-md-6">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Libero, atque.</div>
         <div class="col-md-6">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Libero, atque.</div>
 
@@ -243,7 +243,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
 <script type="text/javascript">
-    
+    // document.getElementsByTagName("body")[0].style.height=window.outerHeight+"px";
 async function renderAllPages(x) {
     const pdfUrl = x;
   const pdfData = await fetch(pdfUrl).then((response) => response.arrayBuffer());
